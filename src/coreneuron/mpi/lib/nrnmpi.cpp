@@ -34,7 +34,7 @@ static void nrn_fatal_error(const char* msg) {
     nrnmpi_abort_impl(-1);
 }
 
-nrnmpi_init_ret_t nrnmpi_init_impl(int* pargc, char*** pargv, bool is_quiet) {
+nrnmpi_init_ret_t nrnmpi_init_impl(int group, int* pargc, char*** pargv, bool is_quiet) {
     // Execute at most once per launch. Avoid memory leak.
     static bool executed = false;
     if (executed) {

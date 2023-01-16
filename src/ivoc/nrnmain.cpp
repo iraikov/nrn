@@ -14,7 +14,7 @@ void nrnmpi_stubs();
 void nrnmpi_load_or_exit(bool is_python);
 #endif
 #if NRNMPI
-extern "C" void nrnmpi_init(int nrnmpi_under_nrncontrol, int* pargc, char*** pargv);
+extern "C" void nrnmpi_init(int nrnmpi_under_nrncontrol, int group, int* pargc, char*** pargv);
 #endif
 
 int main(int argc, char** argv, char** env) {
@@ -40,7 +40,7 @@ printf("argv[%d]=|%s|\n", i, argv[i]);
         }
     }
 #endif
-    nrnmpi_init(1, &argc, &argv);  // may change argc and argv
+    nrnmpi_init(1, -1, &argc, &argv);  // may change argc and argv
 #endif
     errno = 0;
     return ivocmain(argc, (const char**) argv, (const char**) env);

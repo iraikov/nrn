@@ -54,7 +54,7 @@ static int nrnmpi_under_nrncontrol_;
 static int nrnmpi_is_setup_;
 #endif
 
-extern "C" void nrnmpi_init(int nrnmpi_under_nrncontrol, int* pargc, char*** pargv) {
+extern "C" void nrnmpi_init(int nrnmpi_under_nrncontrol, int group, int* pargc, char*** pargv) {
 #if NRNMPI
     int i, b, flag;
     if (nrnmpi_use) {
@@ -132,7 +132,15 @@ for (i=0; i < *pargc; ++i) {
 #else
         {
 #endif
+
+          if (group >= 0) {
+            int world_rank=-1;
+            asrt(MPI_Comm_rank(MPI_COMM_WORLD, &world_rank));
+            asrt(MPI_Comm_split ( MPI_COMM_WORLD, group, world_rank,  
+                                  &nrnmpi_world_comm )); 
+          } else {
             asrt(MPI_Comm_dup(MPI_COMM_WORLD, &nrnmpi_world_comm));
+          }
         }
     }
     grp_bbs = MPI_GROUP_NULL;

@@ -480,7 +480,8 @@ extern "C" void mk_mech_init(int argc, char** argv) {
             mpi_lib_loaded = true;
         }
 #endif
-        auto ret = nrnmpi_init(&argc, &argv, corenrn_param.is_quiet());
+        int group = -1;
+        auto ret = nrnmpi_init(group, &argc, &argv, corenrn_param.is_quiet());
         nrnmpi_numprocs = ret.numprocs;
         nrnmpi_myid = ret.myid;
     }

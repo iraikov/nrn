@@ -329,7 +329,7 @@ extern "C" PyObject* PyInit_hoc() {
     p_nrnpython_finalize = nrnpython_finalize;
 #if NRNMPI
     if (libnrnmpi_is_loaded) {
-        nrnmpi_init(1, &argc, &argv);  // may change argc and argv
+      nrnmpi_init(1, -1, &argc, &argv);  // may change argc and argv
     }
 #if 0 && !defined(NRNMPI_DYNAMICLOAD)
 	if (nrnmpi_myid == 0) {

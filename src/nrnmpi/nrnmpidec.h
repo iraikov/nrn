@@ -54,7 +54,7 @@ extern int nrnmpi_bbsrecv(int source, bbsmpibuf* r);
 extern int nrnmpi_bbssendrecv(int dest, int tag, bbsmpibuf* s, bbsmpibuf* r);
 
 /* from nrnmpi.cpp */
-extern void nrnmpi_init(int nrnmpi_under_nrncontrol, int* pargc, char*** pargv);
+extern void nrnmpi_init(int nrnmpi_under_nrncontrol, int group, int* pargc, char*** pargv);
 extern int nrnmpi_wrap_mpi_init(int* flag);
 extern double nrnmpi_wtime();
 extern void nrnmpi_terminate();
