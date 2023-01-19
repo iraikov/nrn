@@ -102,6 +102,10 @@ corenrn_parameters::corenrn_parameters()
     sub_parallel->add_flag("--skip-mpi-finalize",
                            this->skip_mpi_finalize,
                            "Do not call mpi finalize.");
+    sub_parallel->add_option("--mpi-group",
+                             this->mpi_group,
+                             "Specify MPI partitioning group.")
+      ->check(CLI::Range(-1, 1'000'000));
 
     auto sub_spike = app.add_option_group("spike", "Spike exchange options.");
     sub_spike
@@ -239,7 +243,8 @@ std::ostream& operator<<(std::ostream& os, const corenrn_parameters& corenrn_par
        << std::endl
        << "PARALLEL COMPUTATION PARAMETERS" << std::endl
        << "--threading=" << (corenrn_param.threading ? "true" : "false") << std::endl
-       << "--skip_mpi_finalize=" << (corenrn_param.skip_mpi_finalize ? "true" : "false")
+       << "--skip_mpi_finalize=" << (corenrn_param.skip_mpi_finalize ? "true" : "false") << std::endl
+       << "--mpi-group=" << (corenrn_param.mpi_group)
        << std::endl
        << std::endl
        << "SPIKE EXCHANGE" << std::endl

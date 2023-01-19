@@ -78,13 +78,17 @@ void set_openmp_threads(int nthread) {
  * Convert char* containing arguments from neuron to char* argv[] for
  * coreneuron command line argument parser.
  */
-char* prepare_args(int& argc, char**& argv, int use_mpi, const char* mpi_lib, const char* arg) {
+char* prepare_args(int& argc, char**& argv, int use_mpi, int mpi_group, const char* mpi_lib, const char* arg) {
     // first construct all arguments as string
     std::string args(arg);
     args.insert(0, " coreneuron ");
     args.append(" --skip-mpi-finalize ");
     if (use_mpi) {
         args.append(" --mpi ");
+    }
+    if (mpi_group > 0) {
+        args.append(" --mpi-group ");
+        args.append(std::to_string(mpi_group));
     }
 
     // if neuron has passed name of MPI library then add it to CLI
@@ -480,8 +484,7 @@ extern "C" void mk_mech_init(int argc, char** argv) {
             mpi_lib_loaded = true;
         }
 #endif
-        int group = -1;
-        auto ret = nrnmpi_init(group, &argc, &argv, corenrn_param.is_quiet());
+        auto ret = nrnmpi_init(corenrn_param.mpi_group, &argc, &argv, corenrn_param.is_quiet());
         nrnmpi_numprocs = ret.numprocs;
         nrnmpi_myid = ret.myid;
     }

@@ -40,6 +40,7 @@ extern void nrnmusic_terminate();
 MPI_Comm nrnmpi_world_comm;
 MPI_Comm nrnmpi_comm;
 MPI_Comm nrn_bbs_comm;
+int nrnmpi_group;
 static MPI_Group grp_bbs;
 static MPI_Group grp_net;
 
@@ -132,8 +133,9 @@ for (i=0; i < *pargc; ++i) {
 #else
         {
 #endif
-
+          nrnmpi_group = -1;
           if (group >= 0) {
+            nrnmpi_group = group;
             int world_rank=-1;
             asrt(MPI_Comm_rank(MPI_COMM_WORLD, &world_rank));
             asrt(MPI_Comm_split ( MPI_COMM_WORLD, group, world_rank,  

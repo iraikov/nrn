@@ -286,7 +286,7 @@ int nrncore_run(const char* arg) {
     map_coreneuron_callbacks(handle);
 
     // lookup symbol from coreneuron for launching
-    using launcher_t = int (*)(int, int, int, int, const char*, const char*);
+    using launcher_t = int (*)(int, int, int, int, int, const char*, const char*);
     auto* const coreneuron_launcher = reinterpret_cast<launcher_t>(
         dlsym(handle, "corenrn_embedded_run"));
     if (!coreneuron_launcher) {
@@ -303,7 +303,7 @@ int nrncore_run(const char* arg) {
 
     // launch coreneuron
     int result = coreneuron_launcher(
-        nrn_nthread, have_gap, nrnmpi_use, nrn_use_fast_imem, corenrn_mpi_library.c_str(), arg);
+      nrn_nthread, have_gap, nrnmpi_use, nrn_use_fast_imem, nrnmpi_group, corenrn_mpi_library.c_str(), arg);
 
     // close handle and return result
     dlclose(handle);

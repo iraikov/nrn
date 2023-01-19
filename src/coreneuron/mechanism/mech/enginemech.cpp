@@ -58,7 +58,7 @@ extern bool corenrn_embedded;
 extern int corenrn_embedded_nthread;
 
 /// parse arguments from neuron and prepare new one for coreneuron
-char* prepare_args(int& argc, char**& argv, int use_mpi, const char* mpi_lib, const char* nrn_arg);
+char* prepare_args(int& argc, char**& argv, int use_mpi, int mpi_group, const char* mpi_lib, const char* nrn_arg);
 
 /// initialize standard mechanisms from coreneuron
 void mk_mech_init(int argc, char** argv);
@@ -72,6 +72,7 @@ void set_openmp_threads(int nthread);
  * @param have_gaps True if gap junctions are used
  * @param use_mpi True if MPI is used on NEURON side
  * @param use_fast_imem True if fast imembrance calculation enabled
+ * @param mpi_group MPI partitioning group or -1 if none
  * @param nrn_arg Command line arguments passed by NEURON
  * @return 1 if embedded mode is used otherwise 0
  * \todo Change return type semantics
@@ -80,6 +81,7 @@ int corenrn_embedded_run(int nthread,
                          int have_gaps,
                          int use_mpi,
                          int use_fast_imem,
+                         int mpi_group,
                          const char* mpi_lib,
                          const char* nrn_arg) {
     // set coreneuron's internal variable based on neuron arguments
@@ -94,7 +96,7 @@ int corenrn_embedded_run(int nthread,
     // pre-process argumnets from neuron and prepare new for coreneuron
     int argc;
     char** argv;
-    char* new_arg = prepare_args(argc, argv, use_mpi, mpi_lib, nrn_arg);
+    char* new_arg = prepare_args(argc, argv, use_mpi, mpi_group, mpi_lib, nrn_arg);
 
     // initialize internal arguments
     mk_mech_init(argc, argv);
