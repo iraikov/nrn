@@ -22,6 +22,7 @@ namespace coreneuron {
 
 MPI_Comm nrnmpi_world_comm;
 MPI_Comm nrnmpi_comm;
+int nrnmpi_group;
 int nrnmpi_numprocs_;
 int nrnmpi_myid_;
 
@@ -54,7 +55,16 @@ nrnmpi_init_ret_t nrnmpi_init_impl(int group, int* pargc, char*** pargv, bool is
         nrn_assert(MPI_Init(pargc, pargv) == MPI_SUCCESS);
 #endif
     }
-    nrn_assert(MPI_Comm_dup(MPI_COMM_WORLD, &nrnmpi_world_comm) == MPI_SUCCESS);
+    nrnmpi_group = -1;
+    if (group >= 0) {
+      nrnmpi_group = group;
+      int world_rank=-1;
+      nrn_assert(MPI_Comm_rank(MPI_COMM_WORLD, &world_rank) == MPI_SUCCESS);
+      nrn_assert(MPI_Comm_split ( MPI_COMM_WORLD, group, world_rank,  
+                                  &nrnmpi_world_comm ) == MPI_SUCCESS); 
+    } else {
+      nrn_assert(MPI_Comm_dup(MPI_COMM_WORLD, &nrnmpi_world_comm) == MPI_SUCCESS);
+    }
     nrn_assert(MPI_Comm_dup(nrnmpi_world_comm, &nrnmpi_comm) == MPI_SUCCESS);
     nrn_assert(MPI_Comm_rank(nrnmpi_world_comm, &nrnmpi_myid_) == MPI_SUCCESS);
     nrn_assert(MPI_Comm_size(nrnmpi_world_comm, &nrnmpi_numprocs_) == MPI_SUCCESS);
