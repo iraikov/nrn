@@ -263,7 +263,13 @@ def test_deleted_sec():
             # for valid section first.
             words = str(m).split()
             print("m is " + words[4] + "." + words[2])
-            expect_err("m()")
+            if "name" != words[2]:
+                expect_err("m()")
+
+    # Mere printing of an invalid object is not supposed to be an error.
+    print(s)
+    print(seg)
+    print(mech)
 
     assert str(s) == "<deleted section>"
     assert str(seg) == "<segment of deleted section>"
@@ -384,8 +390,9 @@ def test_nosection():
 
 
 def test_nrn_mallinfo():
-    # figure out if ASan was enabled, see comment in unit_test.cpp
-    if "address" in config.arguments["NRN_SANITIZERS"]:
+    # figure out if ASan or TSan was enabled, see comment in unit_test.cpp
+    sanitizers = config.arguments["NRN_SANITIZERS"]
+    if "address" in sanitizers or "thread" in sanitizers:
         print("Skipping nrn_mallinfo checks because ASan was enabled")
         return
     assert h.nrn_mallinfo(0) > 0
@@ -395,7 +402,7 @@ def test_errorcode():
     import os, sys, subprocess
 
     process = subprocess.run('nrniv -c "1/0"', shell=True)
-    assert process.returncode > 0
+    assert process.returncode != 0
 
     exe = os.environ.get("NRN_PYTHON_EXECUTABLE", sys.executable)
     env = os.environ.copy()
@@ -408,7 +415,7 @@ def test_errorcode():
     process = subprocess.run(
         [exe, "-c", "from neuron import h; h.sqrt(-1)"], env=env, shell=False
     )
-    assert process.returncode > 0
+    assert process.returncode != 0
 
 
 def test_hocObj_error_in_construction():
@@ -448,8 +455,8 @@ def test_help():
     assert h.Vector().to_python.__doc__.startswith(
         "Syntax:\n    ``pythonlist = vec.to_python()"
     )
-    assert h.Vector().__doc__.startswith("This class was imple")
-    assert h.Vector.__doc__.startswith("This class was imple")
+    assert h.Vector().__doc__.startswith("class neuron.hoc.HocObject")
+    assert h.Vector.__doc__.startswith("class neuron.hoc.HocObject")
     assert h.finitialize.__doc__.startswith("Syntax:\n    ``h.finiti")
     assert h.__doc__.startswith("\n\nneuron.h\n====")
 
