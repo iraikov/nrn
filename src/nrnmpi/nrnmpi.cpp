@@ -263,7 +263,7 @@ void nrnmpi_subworld_size(int n) {
         nrn_mpi_assert(MPI_Comm_rank(nrn_bbs_comm, &nrnmpi_myid_bbs));
         nrn_mpi_assert(MPI_Comm_size(nrn_bbs_comm, &nrnmpi_numprocs_bbs));
         nrnmpi_subworld_id = nrnmpi_myid_bbs;
-        nrnmpi_numprocs_subworld = nrnmpi_numprocs_bbs;
+        nrnmpi_numprocs_subworld = nrnmpi_numprocs;
     } else if (n == nrnmpi_numprocs_world) {
         nrn_mpi_assert(MPI_Group_incl(wg, 1, &r, &grp_bbs));
         nrn_mpi_assert(MPI_Comm_dup(nrnmpi_world_comm, &nrnmpi_comm));
